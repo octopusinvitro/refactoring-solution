@@ -32,3 +32,8 @@ Metrics/PerceivedComplexity:
 Style/IfInsideElse:
   Exclude:
     - 'lib/date_range_formatter.rb'
+
+Lint/UnifiedInteger:
+  Exclude:
+    - 'lib/fixnum.rb'
+    - 'spec/fixnum_spec.rb'
