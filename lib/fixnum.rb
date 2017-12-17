@@ -1,15 +1,16 @@
-class Fixnum
+# frozen_string_literal: true
+
+class Integer
   def ordinalize
-    if (11..13).include?(abs % 100)
+    if (11..13).cover?(abs % 100)
       "#{self}th"
     else
       case abs % 10
-      when 1; "#{self}st"
-      when 2; "#{self}nd"
-      when 3; "#{self}rd"
-      else    "#{self}th"
+      when 1 then "#{self}st"
+      when 2 then "#{self}nd"
+      when 3 then "#{self}rd"
+      else "#{self}th"
       end
     end
   end
 end
-
