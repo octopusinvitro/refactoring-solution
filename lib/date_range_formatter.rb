@@ -12,14 +12,10 @@ class DateRangeFormatter
   end
 
   def to_s
-    if same_day?
-      same_day
-    elsif same_month?
-      same_month
-    elsif same_year?
-      same_year
+    if same_date?
+      same_date
     else
-      different_year
+      different_date
     end
   end
 
@@ -27,7 +23,7 @@ class DateRangeFormatter
 
   attr_reader :start_date, :end_date, :start_time, :end_time
 
-  def same_day?
+  def same_date?
     start_date == end_date
   end
 
@@ -39,7 +35,7 @@ class DateRangeFormatter
     start_date.year == end_date.year
   end
 
-  def same_day
+  def same_date
     if start_time && end_time
       "#{full_start_date}#{full_start_time} to #{end_time}"
     elsif end_time
@@ -49,39 +45,16 @@ class DateRangeFormatter
     end
   end
 
-  def same_month
-    if start_time || end_time
-      "#{full_start_date}#{full_start_time} - #{full_end_date}#{full_end_time}"
-    else
-      start_date.strftime(
-        "#{start_date.day.ordinalize} - #{end_date.day.ordinalize} %B %Y"
-      )
-    end
-  end
-
-  def same_year
-    if start_time || end_time
-      "#{full_start_date}#{full_start_time} - #{full_end_date}#{full_end_time}"
-    else
-      start_date.strftime("#{start_date.day.ordinalize} %B - ") +
-        end_date.strftime("#{end_date.day.ordinalize} %B %Y")
-    end
-  end
-
-  def different_year
+  def different_date
     "#{full_start_date}#{full_start_time} - #{full_end_date}#{full_end_time}"
   end
 
   def full_start_date
-    full_date(start_date)
+    start_date.strftime("#{start_date.day.ordinalize}#{month_and_year}")
   end
 
   def full_end_date
-    full_date(end_date)
-  end
-
-  def full_date(date)
-    date.strftime(format_date(date))
+    end_date.strftime("#{end_date.day.ordinalize} %B %Y")
   end
 
   def full_start_time
@@ -92,7 +65,19 @@ class DateRangeFormatter
     " at #{end_time}" if end_time
   end
 
-  def format_date(date)
-    "#{date.day.ordinalize} %B %Y"
+  def month_and_year
+    if start_time || end_time
+      ' %B %Y'
+    else
+      if same_date?
+        ' %B %Y'
+      elsif same_year? && same_month?
+        ''
+      elsif same_year?
+        ' %B'
+      else
+        ' %B %Y'
+      end
+    end
   end
 end
