@@ -1,5 +1,7 @@
-require "date"
-require "fixnum"
+# frozen_string_literal: true
+
+require 'date'
+require 'fixnum'
 
 class DateRangeFormatter
   def initialize(start_date, end_date, start_time = nil, end_time = nil)
@@ -56,4 +58,3 @@ class DateRangeFormatter
     end
   end
 end
-
