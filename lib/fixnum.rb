@@ -1,16 +1,25 @@
 # frozen_string_literal: true
 
-class Integer
+class Fixnum
+  GENERIC_ORDINAL = 'th'
+  FIRST_THREE_ORDINALS = {
+    '1' => 'st',
+    '2' => 'nd',
+    '3' => 'rd'
+  }.freeze
+
   def ordinalize
-    if (11..13).cover?(abs % 100)
-      "#{self}th"
-    else
-      case abs % 10
-      when 1 then "#{self}st"
-      when 2 then "#{self}nd"
-      when 3 then "#{self}rd"
-      else "#{self}th"
-      end
-    end
+    "#{self}#{ordinal_indicator}"
+  end
+
+  private
+
+  def ordinal_indicator
+    return GENERIC_ORDINAL if exception_to_first_three?
+    FIRST_THREE_ORDINALS.fetch((abs % 10).to_s, GENERIC_ORDINAL)
+  end
+
+  def exception_to_first_three?
+    (11..13).cover?(abs % 100)
   end
 end
