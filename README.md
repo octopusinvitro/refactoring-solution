@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.org/octopusinvitro/refactoring-solution.svg?branch=master)](https://travis-ci.org/octopusinvitro/refactoring-solution)
+[![Coverage Status](https://coveralls.io/repos/github/octopusinvitro/refactoring-solution/badge.svg?branch=master)](https://coveralls.io/github/octopusinvitro/refactoring-solution?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/87e616683a802d3d1b64/maintainability)](https://codeclimate.com/github/octopusinvitro/refactoring-solution/maintainability)
+
+
 #  Refactoring Exercise
 
 Inside this directory you'll find a Ruby program to format date ranges with
