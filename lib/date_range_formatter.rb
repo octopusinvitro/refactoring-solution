@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'date'
-require 'fixnum'
+require 'ordinalizer'
 
 class DateRangeFormatter
   MONTH = '%B'
@@ -24,11 +24,11 @@ class DateRangeFormatter
   attr_reader :start_date, :end_date, :start_time, :end_time
 
   def full_start_date
-    start_date.strftime("#{start_date.day.ordinalize}#{start_month_year}")
+    start_date.strftime("#{ordinalized_start_day}#{start_month_year}")
   end
 
   def full_end_date
-    end_date.strftime("#{end_date.day.ordinalize}#{end_month_year}")
+    end_date.strftime("#{ordinalized_end_day}#{end_month_year}")
   end
 
   def full_end_date_with_dash
@@ -74,5 +74,13 @@ class DateRangeFormatter
 
   def end_month_year
     " #{MONTH} #{YEAR}"
+  end
+
+  def ordinalized_start_day
+    Ordinalizer.run(start_date.day)
+  end
+
+  def ordinalized_end_day
+    Ordinalizer.run(end_date.day)
   end
 end
