@@ -24,8 +24,8 @@ RSpec.describe Ordinalizer do
 
   it 'ordinalizes exceptions 11, 12 and 13' do
     expect(described_class.run(11)).to eq('11th')
-    expect(described_class.run(12)).to eq('12th')
-    expect(described_class.run(13)).to eq('13th')
+    expect(described_class.run(312)).to eq('312th')
+    expect(described_class.run(4213)).to eq('4213th')
   end
 
   it 'ordinalizes rest' do
