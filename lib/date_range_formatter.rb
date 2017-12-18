@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'date'
+require 'date_range'
 require 'ordinalizer'
 
 class DateRangeFormatter
@@ -8,8 +9,7 @@ class DateRangeFormatter
   YEAR = '%Y'
 
   def initialize(start_date, end_date, start_time = nil, end_time = nil)
-    @start_date = Date.parse(start_date)
-    @end_date = Date.parse(end_date)
+    @range = DateRange.new(Date.parse(start_date), Date.parse(end_date))
     @start_time = start_time
     @end_time = end_time
   end
@@ -21,18 +21,18 @@ class DateRangeFormatter
 
   private
 
-  attr_reader :start_date, :end_date, :start_time, :end_time
+  attr_reader :range, :start_time, :end_time
 
   def full_start_date
-    start_date.strftime("#{ordinalized_start_day}#{start_month_year}")
+    range.start_date.strftime("#{ordinalized_start_day}#{start_month_year}")
   end
 
   def full_end_date
-    end_date.strftime("#{ordinalized_end_day}#{end_month_year}")
+    range.end_date.strftime("#{ordinalized_end_day}#{end_month_year}")
   end
 
   def full_end_date_with_dash
-    " - #{full_end_date}" unless same_dates?
+    " - #{full_end_date}" unless range.same_dates?
   end
 
   def formatted_start_time
@@ -44,21 +44,9 @@ class DateRangeFormatter
   end
 
   def preposition
-    return ' at ' unless same_dates?
+    return ' at ' unless range.same_dates?
     return ' to ' if start_time
     ' until '
-  end
-
-  def same_dates?
-    start_date == end_date
-  end
-
-  def same_month?
-    start_date.month == end_date.month
-  end
-
-  def same_year?
-    start_date.year == end_date.year
   end
 
   def a_time_was_provided?
@@ -66,9 +54,9 @@ class DateRangeFormatter
   end
 
   def start_month_year
-    return " #{MONTH} #{YEAR}" if a_time_was_provided? || same_dates?
-    return '' if same_year? && same_month?
-    return " #{MONTH}" if same_year?
+    return " #{MONTH} #{YEAR}" if a_time_was_provided? || range.same_dates?
+    return '' if range.same_year_and_month?
+    return " #{MONTH}" if range.same_year?
     " #{MONTH} #{YEAR}"
   end
 
@@ -77,10 +65,10 @@ class DateRangeFormatter
   end
 
   def ordinalized_start_day
-    Ordinalizer.run(start_date.day)
+    Ordinalizer.run(range.start_day)
   end
 
   def ordinalized_end_day
-    Ordinalizer.run(end_date.day)
+    Ordinalizer.run(range.end_day)
   end
 end
