@@ -1,69 +1,74 @@
 # frozen_string_literal: true
 
 require 'date'
-require 'fixnum'
+require 'date_range'
+require 'ordinalizer'
 
 class DateRangeFormatter
+  MONTH = '%B'
+  YEAR = '%Y'
+
   def initialize(start_date, end_date, start_time = nil, end_time = nil)
-    @start_date = Date.parse(start_date)
-    @end_date = Date.parse(end_date)
+    @range = DateRange.new(Date.parse(start_date), Date.parse(end_date))
     @start_time = start_time
     @end_time = end_time
   end
 
   def to_s
-    full_start_date = @start_date.strftime(
-      "#{@start_date.day.ordinalize} %B %Y"
-    )
-    full_end_date = @end_date.strftime(
-      "#{@end_date.day.ordinalize} %B %Y"
-    )
+    "#{full_start_date}#{formatted_start_time}" \
+    "#{full_end_date_with_dash}#{formatted_end_time}"
+  end
 
-    if @start_date == @end_date
-      if @start_time && @end_time
-        "#{full_start_date} at #{@start_time} to #{@end_time}"
-      elsif @start_time
-        "#{full_start_date} at #{@start_time}"
-      elsif @end_time
-        "#{full_start_date} until #{@end_time}"
-      else
-        full_start_date
-      end
-    elsif @start_date.month == @end_date.month
-      if @start_time && @end_time
-        "#{full_start_date} at #{@start_time} - " \
-          "#{full_end_date} at #{@end_time}"
-      elsif @start_time
-        "#{full_start_date} at #{@start_time} - #{full_end_date}"
-      elsif @end_time
-        "#{full_start_date} - #{full_end_date} at #{@end_time}"
-      else
-        @start_date.strftime("#{@start_date.day.ordinalize} - " \
-          "#{@end_date.day.ordinalize} %B %Y")
-      end
-    elsif @start_date.year == @end_date.year
-      if @start_time && @end_time
-        "#{full_start_date} at #{@start_time} - " \
-          "#{full_end_date} at #{@end_time}"
-      elsif @start_time
-        "#{full_start_date} at #{@start_time} - #{full_end_date}"
-      elsif @end_time
-        "#{full_start_date} - #{full_end_date} at #{@end_time}"
-      else
-        @start_date.strftime("#{@start_date.day.ordinalize} %B - ") +
-          @end_date.strftime("#{@end_date.day.ordinalize} %B %Y")
-      end
-    else
-      if @start_time && @end_time
-        "#{full_start_date} at #{@start_time} - " \
-          "#{full_end_date} at #{@end_time}"
-      elsif @start_time
-        "#{full_start_date} at #{@start_time} - #{full_end_date}"
-      elsif @end_time
-        "#{full_start_date} - #{full_end_date} at #{@end_time}"
-      else
-        "#{full_start_date} - #{full_end_date}"
-      end
-    end
+  private
+
+  attr_reader :range, :start_time, :end_time
+
+  def full_start_date
+    range.start_date.strftime("#{ordinalized_start_day}#{start_month_year}")
+  end
+
+  def full_end_date
+    range.end_date.strftime("#{ordinalized_end_day}#{end_month_year}")
+  end
+
+  def full_end_date_with_dash
+    " - #{full_end_date}" unless range.same_dates?
+  end
+
+  def formatted_start_time
+    " at #{start_time}" if start_time
+  end
+
+  def formatted_end_time
+    "#{preposition}#{end_time}" if end_time
+  end
+
+  def preposition
+    return ' at ' unless range.same_dates?
+    return ' to ' if start_time
+    ' until '
+  end
+
+  def a_time_was_provided?
+    start_time || end_time
+  end
+
+  def start_month_year
+    return " #{MONTH} #{YEAR}" if a_time_was_provided? || range.same_dates?
+    return '' if range.same_year_and_month?
+    return " #{MONTH}" if range.same_year?
+    " #{MONTH} #{YEAR}"
+  end
+
+  def end_month_year
+    " #{MONTH} #{YEAR}"
+  end
+
+  def ordinalized_start_day
+    Ordinalizer.run(range.start_day)
+  end
+
+  def ordinalized_end_day
+    Ordinalizer.run(range.end_day)
   end
 end
