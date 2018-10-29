@@ -7,6 +7,6 @@ group :test do
   gem 'coveralls', require: false
   gem 'pry'
   gem 'rake'
-  gem 'rspec', '~> 3.1.0'
+  gem 'rspec'
   gem 'rubocop', require: false
 end
