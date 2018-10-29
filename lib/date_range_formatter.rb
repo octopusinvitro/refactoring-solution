@@ -46,6 +46,7 @@ class DateRangeFormatter
   def preposition
     return ' at ' unless range.same_dates?
     return ' to ' if start_time
+
     ' until '
   end
 
@@ -57,6 +58,7 @@ class DateRangeFormatter
     return " #{MONTH} #{YEAR}" if a_time_was_provided? || range.same_dates?
     return '' if range.same_year_and_month?
     return " #{MONTH}" if range.same_year?
+
     " #{MONTH} #{YEAR}"
   end
 

@@ -26,6 +26,7 @@ class Ordinalizer
 
   def ordinal_indicator
     return GENERIC_ORDINAL if exception_to_first_three?
+
     FIRST_THREE_ORDINALS.fetch((abs % 10).to_s, GENERIC_ORDINAL)
   end
 
